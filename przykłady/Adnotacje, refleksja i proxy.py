@@ -51,3 +51,23 @@ user_proxy = LazyProxy(User, object_id=1)
 print("Obiekt proxy utworzony (cisza w logach bazy)...")
 print(f"Teraz potrzebuję loginu: {user_proxy.username}")
 
+print(f"----------------------------------------")
+
+# dekorator
+def track_changes(cls):
+    orig_setattr = cls.__setattr__
+
+    def __setattr__(self, name, value):
+        print(f"--- [LOG]: Zmiana pola {name} na {value} ---")
+        orig_setattr(self, name, value)
+
+    cls.__setattr__ = __setattr__
+    return cls
+
+@track_changes
+class User:
+    pass
+
+u = User()
+u.name = "Admin"
+
